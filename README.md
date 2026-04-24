@@ -1,36 +1,260 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🈶 Aksara Jawa Translator
 
-## Getting Started
+### Latin ↔ Aksara Jawa (Hanacaraka) Web App
 
-First, run the development server:
+Aplikasi web modern untuk menerjemahkan teks **Latin ke Aksara Jawa** dan sebaliknya secara real-time.
+Dilengkapi dengan fitur input canggih seperti **kamera, upload gambar, dan file (PDF, DOCX, TXT)**.
+
+---
+
+## ✨ Demo Preview
+
+> Aplikasi ini dirancang dengan UI modern seperti SaaS (inspirasi: Google Translate, Notion, ChatGPT)
+
+---
+
+## 🚀 Fitur Utama
+
+### 🔄 Translasi Dua Arah
+
+* Latin → Aksara Jawa
+* Aksara Jawa → Latin
+
+### ⚡ Real-Time Translation
+
+* Hasil langsung muncul saat mengetik
+* Tanpa reload halaman
+
+---
+
+### ⌨️ Keyboard Aksara Jawa
+
+* Virtual keyboard lengkap
+* Memudahkan input aksara tanpa install font tambahan
+
+---
+
+### 📸 Input Multi-Source (Fitur Unggulan)
+
+#### 1. Kamera (Live Capture)
+
+* Ambil foto langsung dari kamera
+* Cocok untuk scan teks
+
+#### 2. Upload Gambar
+
+* Format: JPG, PNG, WEBP
+* Preview langsung di UI
+
+#### 3. Upload File
+
+* 📄 PDF
+* 📝 DOCX
+* 📃 TXT
+
+---
+
+### 🧠 Parsing File Otomatis
+
+* TXT → langsung dibaca
+* PDF → menggunakan `pdf.js`
+* DOCX → menggunakan `mammoth.js`
+
+---
+
+### 🎨 UI/UX Modern
+
+* Dark / Light Mode
+* Glassmorphism Design
+* Responsive (Mobile Friendly)
+* Smooth Animation
+
+---
+
+### 📋 Fitur Tambahan
+
+* Copy hasil ke clipboard
+* Download hasil
+* Drag & Drop file
+* Error handling input
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* **Next.js (App Router)**
+* **React.js**
+* **Tailwind CSS**
+
+### Library Tambahan
+
+* `pdfjs-dist` → parsing PDF
+* `mammoth` → parsing DOCX
+
+---
+
+## 📦 Instalasi
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/XhuuLL/Aksara-Jawa-Translator.git
+cd aksara-jawa-translator
+```
+
+---
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 3. Install Library Tambahan
+
+```bash
+npm install pdfjs-dist mammoth
+```
+
+---
+
+### 4. Jalankan Project
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka di browser:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📁 Struktur Project
 
-To learn more about Next.js, take a look at the following resources:
+```
+/src
+ ├── app/
+ │   └── page.js
+ ├── components/
+ │   ├── Translator.jsx
+ │   ├── JavaneseKeyboard.jsx
+ │   ├── CameraCapture.jsx
+ │   ├── FileUpload.jsx
+ │
+ ├── utils/
+ │   ├── translator.js
+ │   ├── mapping.js
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧠 Cara Kerja Translasi
 
-## Deploy on Vercel
+### Latin → Aksara Jawa
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Input dipecah menjadi suku kata
+2. Mapping ke aksara dasar
+3. Tambahkan:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   * sandhangan (vokal)
+   * pasangan (konsonan mati)
+4. Output berupa Unicode aksara Jawa
+
+---
+
+### Aksara Jawa → Latin
+
+1. Membaca unicode karakter
+2. Deteksi:
+
+   * aksara dasar
+   * sandhangan
+   * pasangan
+3. Konversi kembali ke huruf Latin
+
+---
+
+## 📸 Fitur Kamera
+
+Menggunakan:
+
+```js
+navigator.mediaDevices.getUserMedia()
+```
+
+### Catatan:
+
+* Hanya berjalan di:
+
+  * `localhost`
+  * HTTPS (production)
+
+---
+
+## 📄 Parsing File
+
+### PDF
+
+Menggunakan:
+
+```bash
+pdfjs-dist
+```
+
+### DOCX
+
+Menggunakan:
+
+```bash
+mammoth
+```
+
+---
+
+## ⚠️ Limitasi
+
+* Translasi belum 100% sempurna (rule-based)
+* OCR (scan teks dari gambar) belum tersedia
+* Parsing PDF tergantung struktur file
+
+---
+
+## 🔮 Roadmap
+
+* [ ] OCR Aksara Jawa (scan dari gambar)
+* [ ] AI-based translation (lebih akurat)
+* [ ] Speech to Text
+* [ ] Export ke gambar
+* [ ] PWA (install sebagai app)
+
+---
+
+## 🤝 Kontribusi
+
+Kontribusi sangat terbuka!
+
+1. Fork repo
+2. Buat branch baru
+3. Commit perubahan
+4. Submit Pull Request
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## ❤️ Credits
+
+Dibuat untuk melestarikan budaya Jawa
+
+---

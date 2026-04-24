@@ -123,3 +123,36 @@ export const PADA = {
   'koma': '\uA9C7',   // ꦇ - pada pangkat (comma equivalent)
   'titik': '\uA9C8',  // ꦈ - pada lingsa (period equivalent)
 };
+
+// ═══════════════════════════════════════════════════════════════
+// REVERSE MAPPINGS (Aksara Jawa -> Latin)
+// Digunakan untuk translasi dari Aksara Jawa kembali ke Latin
+// ═══════════════════════════════════════════════════════════════
+
+export const REVERSE_AKSARA = Object.entries(AKSARA).reduce((acc, [key, value]) => {
+  // Hanya ambil mapping dasar, hindari duplikat seperti 'fa', 'va', 'za' menimpa aslinya
+  if (!acc[value] && !['fa', 'va', 'za', 'q', 'x'].includes(key)) {
+    acc[value] = key;
+  }
+  return acc;
+}, {});
+
+export const REVERSE_AKSARA_SWARA = Object.entries(AKSARA_SWARA).reduce((acc, [key, value]) => {
+  if (!acc[value] && key !== 'é') { // Hindari alias
+    acc[value] = key;
+  }
+  return acc;
+}, {});
+
+export const REVERSE_SANDHANGAN = Object.entries(SANDHANGAN).reduce((acc, [key, value]) => {
+  if (!acc[value] && key !== 'é') { // Hindari alias
+    acc[value] = key;
+  }
+  return acc;
+}, {});
+
+// Taling Tarung ('o') itu spesial karena terdiri dari 2 karakter: Taling + Tarung
+// Taling: \uA9BA
+// Tarung: \uA9B4
+export const TARUNG = '\uA9B4'; // Tarung character
+export const TALING = '\uA9BA'; // Taling character

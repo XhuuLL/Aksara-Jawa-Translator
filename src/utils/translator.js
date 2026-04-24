@@ -19,6 +19,11 @@ import {
   VOWELS,
   KONSONAN_GABUNGAN,
   KONSONAN_MAP,
+  REVERSE_AKSARA,
+  REVERSE_AKSARA_SWARA,
+  REVERSE_SANDHANGAN,
+  TARUNG,
+  TALING,
 } from './mapping';
 
 // ═══════════════════════════════════════════════════════════════
@@ -285,3 +290,135 @@ export function hasValidInput(text) {
   if (!text || typeof text !== 'string') return false;
   return /[a-zA-Z]/.test(text);
 }
+
+// ═══════════════════════════════════════════════════════════════
+// REVERSE TRANSLATOR (Jawa -> Latin)
+// ═══════════════════════════════════════════════════════════════
+
+/**
+ * Terjemahkan Aksara Jawa ke teks Latin.
+ * 
+ * @param {string} text - Teks Aksara Jawa
+ * @returns {string} Teks Latin
+ */
+export function translateJawaToLatin(text) {
+  if (!text || typeof text !== 'string') return '';
+  
+  let result = '';
+  let i = 0;
+  const len = text.length;
+
+  while (i < len) {
+    const char = text[i];
+    const nextChar = i + 1 < len ? text[i + 1] : null;
+
+    // 1. Spasi dan karakter non-Jawa (Tanda baca, angka biasa, dll)
+    if (char === ' ') {
+      result += ' ';
+      i++;
+      continue;
+    }
+
+    // 2. Aksara Swara (Vokal Mandiri)
+    if (REVERSE_AKSARA_SWARA[char]) {
+      result += REVERSE_AKSARA_SWARA[char];
+      i++;
+      continue;
+    }
+
+    // 3. Aksara Dasar (Carakan)
+    if (REVERSE_AKSARA[char]) {
+      let syllable = REVERSE_AKSARA[char]; // e.g. 'ha', 'na'
+      let vowel = 'a'; // default inheren
+      
+      // Jika aksara adalah 'ha' dan di awal kata, terkadang dibaca 'a', tapi kita biarkan 'ha'
+      
+      // Cek karakter setelah aksara dasar
+      let j = i + 1;
+      let hasPangkon = false;
+      let hasSandhangan = false;
+
+      while (j < len) {
+        const modifier = text[j];
+
+        // Cek jika modifier adalah Taling (é/e) dan mungkin diikuti Tarung (o)
+        if (modifier === TALING) {
+          hasSandhangan = true;
+          if (j + 1 < len && text[j + 1] === TARUNG) {
+            vowel = 'o'; // Taling + Tarung = o
+            j += 2;
+          } else {
+            vowel = 'e'; // Taling saja = e / é
+            j += 1;
+          }
+          break; // Sandhangan swara menggantikan 'a' inheren
+        }
+        
+        // Cek sandhangan swara lainnya (wulu, suku, pepet)
+        if (REVERSE_SANDHANGAN[modifier]) {
+          vowel = REVERSE_SANDHANGAN[modifier];
+          hasSandhangan = true;
+          j++;
+          break;
+        }
+
+        // Cek Pangkon (mematikan vokal)
+        if (modifier === PANGKON) {
+          hasPangkon = true;
+          vowel = ''; // Vokal mati
+          j++;
+          break;
+        }
+
+        // Bukan modifier yang kita kenali (mungkin spasi, atau aksara berikutnya)
+        break;
+      }
+
+      // Gabungkan konsonan dari syllable dengan vokal
+      if (hasPangkon) {
+        // Hapus 'a' dari syllable (misal 'ha' -> 'h', 'ka' -> 'k')
+        if (syllable.endsWith('a')) {
+          result += syllable.slice(0, -1);
+        } else {
+          result += syllable;
+        }
+      } else if (hasSandhangan) {
+        if (syllable.endsWith('a')) {
+          result += syllable.slice(0, -1) + vowel;
+        } else {
+          result += syllable + vowel;
+        }
+      } else {
+        // Aksara dasar utuh
+        result += syllable;
+      }
+
+      i = j;
+      continue;
+    }
+
+    // 4. Fallback: karakter tidak dikenali (mungkin tanda baca pada/PADA)
+    // Tanda koma dan titik Jawa
+    if (char === '\uA9C7') result += ','; // pada pangkat
+    else if (char === '\uA9C8') result += '.'; // pada lingsa
+    else if (char !== TARUNG) { // Abaikan Tarung jika nyasar
+      result += char;
+    }
+    
+    i++;
+  }
+
+  return result;
+}
+
+/**
+ * Validasi apakah input mengandung karakter Aksara Jawa
+ * @param {string} text - Teks input
+ * @returns {boolean} True jika ada karakter Jawa
+ */
+export function hasJavaneseInput(text) {
+  if (!text || typeof text !== 'string') return false;
+  // Rentang Unicode Javanese: U+A980–U+A9DF
+  return /[\uA980-\uA9DF]/.test(text);
+}
+

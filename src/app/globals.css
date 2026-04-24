@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Enable class-based dark mode (Tailwind v4) */
+@custom-variant dark (&:where(.dark, .dark *));
 
+/* ═══════════════════════════════════════════════════════════════
+   TAILWIND v4 THEME CONFIGURATION
+   Using @theme inline for custom tokens
+   ═══════════════════════════════════════════════════════════════ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-javanese: var(--font-javanese);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ═══════════════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — LIGHT MODE (default)
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg-primary: #fafafa;
+  --bg-secondary: #ffffff;
+  --text-primary: #18181b;
+  --text-secondary: #71717a;
+  color-scheme: light;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — DARK MODE
+   ═══════════════════════════════════════════════════════════════ */
+:root.dark {
+  --bg-primary: #09090b;
+  --bg-secondary: #18181b;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+* {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-timing-function: ease-out;
+  transition-duration: 300ms;
+}
+
+/* Exclude elements that need their own transition control */
+textarea, input, button svg, [class*="animate-"] {
+  transition-property: all;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Javanese font utility */
+.font-javanese {
+  font-family: var(--font-javanese), "Noto Sans Javanese", serif;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AMBIENT BACKGROUND
+   Subtle gradient orbs for depth — adapts to theme
+   ═══════════════════════════════════════════════════════════════ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Light mode ambient */
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 100% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 0% 80%, rgba(217, 119, 6, 0.03) 0%, transparent 50%);
+}
+
+.dark body::before {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 191, 36, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 100% 50%, rgba(180, 83, 9, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 0% 80%, rgba(217, 119, 6, 0.03) 0%, transparent 50%);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR — subtle & minimal
+   ═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.2);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.35);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.15);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.25);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECTION
+   ═══════════════════════════════════════════════════════════════ */
+::selection {
+  background: rgba(245, 158, 11, 0.2);
+  color: inherit;
+}
+
+.dark ::selection {
+  background: rgba(251, 191, 36, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOCUS STATES — soft glow ring
+   ═══════════════════════════════════════════════════════════════ */
+textarea:focus,
+input:focus {
+  box-shadow:
+    0 0 0 3px rgba(245, 158, 11, 0.12),
+    0 0 20px rgba(245, 158, 11, 0.04);
+}
+
+.dark textarea:focus,
+.dark input:focus {
+  box-shadow:
+    0 0 0 3px rgba(251, 191, 36, 0.1),
+    0 0 20px rgba(251, 191, 36, 0.03);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+   Staggered fade-in + scale-in utilities
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-delay-1 {
+  opacity: 0;
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
+}
+
+.animate-fade-in-delay-2 {
+  opacity: 0;
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s forwards;
+}
+
+.animate-fade-in-delay-3 {
+  opacity: 0;
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.28s forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
